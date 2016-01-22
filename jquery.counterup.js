@@ -28,7 +28,8 @@
 				var divisions = $settings.time / $settings.delay;
 				var num = $this.text();
 				var isComma = /[0-9]+,[0-9]+/.test( num );
-				num = num.replace( /,/g, '' );
+				var isInvertedCommas = /[0-9]+'[0-9]+/.test( num );
+				num = num.replace( /,/g, '' ).replace( /'/g, '' );
 				var isInt = /^[0-9]+$/.test( num );
 				var isFloat = /^[0-9]+\.[0-9]+$/.test( num );
 				var decimalPlaces = isFloat ? ( num.split( '.' )[1] || [ ] ).length : 0;
@@ -39,6 +40,8 @@
 					// Preserve as int if input was int
 					var newNum = parseInt( num / divisions * i );
 
+					console.log( newNum );
+
 					// Preserve float if input was float
 					if( isFloat ) {
 						newNum = parseFloat( num / divisions * i ).toFixed( decimalPlaces );
@@ -48,6 +51,13 @@
 					if( isComma ) {
 						while( /(\d+)(\d{3})/.test( newNum.toString() ) ) {
 							newNum = newNum.toString().replace( /(\d+)(\d{3})/, '$1' + ',' + '$2' );
+						}
+					}
+
+					// Preserve Inverted Commas
+					if( isInvertedCommas ) {
+						while( /(\d+)(\d{3})/.test( newNum.toString() ) ) {
+							newNum = newNum.toString().replace( /(\d+)(\d{3})/, '$1' + "'" + '$2' );
 						}
 					}
 
